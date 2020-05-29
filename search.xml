@@ -178,8 +178,144 @@
 <p>自己挑选样式<a href="http://tholman.com/github-corners/" target="_blank" rel="noopener">http://tholman.com/github-corners/</a></p>
 ]]></content>
       <categories>
-        <category>博客搭建系列</category>
+        <category>折腾博客这些事</category>
       </categories>
+      <tags>
+        <tag>blog 优化</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Openstack云平台的搭建与运维》期末考试A卷</title>
+    <url>/2020/05/29/%E3%80%8AOpenstack%E4%BA%91%E5%B9%B3%E5%8F%B0%E7%9A%84%E6%90%AD%E5%BB%BA%E4%B8%8E%E8%BF%90%E7%BB%B4%E3%80%8B%E6%9C%9F%E6%9C%AB%E8%80%83%E8%AF%95A%E5%8D%B7/</url>
+    <content><![CDATA[<h1 id="《Openstack云平台的搭建与运维》期末考试A卷"><a href="#《Openstack云平台的搭建与运维》期末考试A卷" class="headerlink" title="《Openstack云平台的搭建与运维》期末考试A卷"></a>《Openstack云平台的搭建与运维》期末考试A卷</h1><h2 id="任务一、云平台搭建（40分）"><a href="#任务一、云平台搭建（40分）" class="headerlink" title="任务一、云平台搭建（40分）"></a>任务一、云平台搭建（40分）</h2><p>根据云平台设计以及以下题干中提供的信息，修改云平台IaaS各节点的系统配置，按云平台搭建步骤逐步安装，并完成相应的答题。</p>
+<h3 id="1-操作系统环境配置（4分）"><a href="#1-操作系统环境配置（4分）" class="headerlink" title="1.操作系统环境配置（4分）"></a>1.操作系统环境配置（4分）</h3><p>设置主机名，防火墙设置以及SELinux设置如下：</p>
+<p>（1）设置控制节点主机名controller；计算节点主机名：compute。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[root@localhost ~]# hostnamectl set-hostname controller</span><br><span class="line">[root@localhost ~]# hostnamectl set-hostname compute</span><br></pre></td></tr></table></figure>
+
+<p>（2）各个节点关闭防火墙，设置开机不启动。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[root@controller ~]# systemctl stop firewalld.service</span><br><span class="line">[root@controller ~]# systemctl disable firewalld.service</span><br><span class="line">Removed symlink &#x2F;etc&#x2F;systemd&#x2F;system&#x2F;dbus-org.fedoraproject.FirewallD1.service.</span><br><span class="line">Removed symlink &#x2F;etc&#x2F;systemd&#x2F;system&#x2F;basic.target.wants&#x2F;firewalld.service.</span><br><span class="line"></span><br><span class="line">[root@compute ~]# systemctl stop firewalld.service</span><br><span class="line">[root@compute ~]# systemctl disable firewalld.service</span><br><span class="line">Removed symlink &#x2F;etc&#x2F;systemd&#x2F;system&#x2F;dbus-org.fedoraproject.FirewallD1.service.</span><br><span class="line">Removed symlink &#x2F;etc&#x2F;systemd&#x2F;system&#x2F;basic.target.wants&#x2F;firewalld.service.</span><br></pre></td></tr></table></figure>
+
+<p>（3）设置各个节点selinux为permissive。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[root@controller ~]# setenforce 0</span><br><span class="line">[root@controller ~]# getenforce </span><br><span class="line">Permissive</span><br><span class="line">[root@compute ~]# setenforce 0</span><br><span class="line">[root@compute ~]# getenforce </span><br><span class="line">Permissive</span><br></pre></td></tr></table></figure>
+
+<p>（4）退出CRT，重新通过ssh连接各节点服务器。</p>
+<p>使用命令进行查询控制节点的主机名，防火墙状态以及selinux的状态。以文本形式依次将命令行及查询信息提交到答题框。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[root@controller ~]# hostnamectl </span><br><span class="line">   Static hostname: controller</span><br><span class="line">         Icon name: computer-server</span><br><span class="line">           Chassis: server</span><br><span class="line">        Machine ID: cef62bca9d724bfa9db3b81ed7bae443</span><br><span class="line">           Boot ID: 8414597f288d4b14b573e612be43f703</span><br><span class="line">  Operating System: CentOS Linux 7 (Core)</span><br><span class="line">       CPE OS Name: cpe:&#x2F;o:centos:centos:7</span><br><span class="line">            Kernel: Linux 3.10.0-327.el7.x86_64</span><br><span class="line">      Architecture: x86-64</span><br><span class="line">[root@compute ~]# hostnamectl </span><br><span class="line">   Static hostname: compute</span><br><span class="line">         Icon name: computer-server</span><br><span class="line">           Chassis: server</span><br><span class="line">        Machine ID: d0521d51bd8f4885919c3d2be3552219</span><br><span class="line">           Boot ID: dfded6b0297a4a938591c019309d0cbb</span><br><span class="line">  Operating System: CentOS Linux 7 (Core)</span><br><span class="line">       CPE OS Name: cpe:&#x2F;o:centos:centos:7</span><br><span class="line">            Kernel: Linux 3.10.0-327.el7.x86_64</span><br><span class="line">      Architecture: x86-64</span><br><span class="line"></span><br><span class="line">[root@controller ~]# sestatus </span><br><span class="line">SELinux status:                 enabled</span><br><span class="line">SELinuxfs mount:                &#x2F;sys&#x2F;fs&#x2F;selinux</span><br><span class="line">SELinux root directory:         &#x2F;etc&#x2F;selinux</span><br><span class="line">Loaded policy name:             targeted</span><br><span class="line">Current mode:                   permissive</span><br><span class="line">Mode from config file:          permissive</span><br><span class="line">Policy MLS status:              enabled</span><br><span class="line">Policy deny_unknown status:     allowed</span><br><span class="line">Max kernel policy version:      28</span><br><span class="line">[root@compute ~]# sestatus </span><br><span class="line">SELinux status:                 enabled</span><br><span class="line">SELinuxfs mount:                &#x2F;sys&#x2F;fs&#x2F;selinux</span><br><span class="line">SELinux root directory:         &#x2F;etc&#x2F;selinux</span><br><span class="line">Loaded policy name:             targeted</span><br><span class="line">Current mode:                   permissive</span><br><span class="line">Mode from config file:          permissive</span><br><span class="line">Policy MLS status:              enabled</span><br><span class="line">Policy deny_unknown status:     allowed</span><br><span class="line">Max kernel policy version:      28</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="2-上传镜像源并挂载（4分）"><a href="#2-上传镜像源并挂载（4分）" class="headerlink" title="2.上传镜像源并挂载（4分）"></a>2.上传镜像源并挂载（4分）</h3><p>在控制节点上通过SecureFX上传两个镜像文件CentOS-7-x86_64-DVD-1511.iso, XianDian-IaaS-v2.2.iso到opt下，通过命令行创建两个目录/opt/centos,/opt/iaas,并将以上镜像文件分别挂载到上述两个目录下，在答题框依次提交上述的命令以及执行结果；</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[root@controller ~]#  mkdir &#x2F;opt&#x2F;&#123;centos,iaas&#125;</span><br><span class="line">[root@controller ~]# mount -o loop CentOS-7-x86_64-DVD-1511.iso &#x2F;opt&#x2F;centos&#x2F;</span><br><span class="line">mount: &#x2F;dev&#x2F;loop3 is write-protected, mounting read-only</span><br><span class="line">[root@controller ~]# mount -o loop XianDian-IaaS-v2.1.iso &#x2F;opt&#x2F;iaas&#x2F;</span><br><span class="line">mount: &#x2F;dev&#x2F;loop0 is write-protected, mounting read-only</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="3-配置本地以及远程yum源（4分）"><a href="#3-配置本地以及远程yum源（4分）" class="headerlink" title="3.配置本地以及远程yum源（4分）"></a>3.配置本地以及远程yum源（4分）</h3><p>配置控制节点本地yum源文件local.repo ，搭建ftp服务器指向存放yum源路径；配置计算节点yum源文件ftp.repo使用之前配置的控制节点ftp作为yum源，其中的两个节点的地址使用主机名表示。使用cat命令查看控制节点和计算节点的yum源全路径配置文件。以文本形式提交查询命令及结果到答题框。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[root@controller ~]# cat &#x2F;etc&#x2F;yum.repos.d&#x2F;local.repo </span><br><span class="line">[iaas]</span><br><span class="line">name&#x3D;iaas</span><br><span class="line">gpgcheck&#x3D;0</span><br><span class="line">enabled&#x3D;1</span><br><span class="line">baseurl&#x3D;file:&#x2F;&#x2F;&#x2F;opt&#x2F;iaas&#x2F;iaas-repo</span><br><span class="line">[centos]</span><br><span class="line">name&#x3D;centos</span><br><span class="line">gpgcheck&#x3D;0</span><br><span class="line">enabled&#x3D;1</span><br><span class="line">baseurl&#x3D;file:&#x2F;&#x2F;&#x2F;opt&#x2F;centos</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="4-环境变量配置（4分）"><a href="#4-环境变量配置（4分）" class="headerlink" title="4.环境变量配置（4分）"></a>4.环境变量配置（4分）</h3><p>在控制节点和计算节点分别安装iaas-xiandian软件包，除了完成配置文件中基本变量的配置，根据表2完成指定变量的配置，以文本形式提交配置文件到答题框中。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[root@controller ~]# cat &#x2F;etc&#x2F;yum.repos.d&#x2F;local.repo </span><br><span class="line">[iaas]</span><br><span class="line">name&#x3D;iaas</span><br><span class="line">gpgcheck&#x3D;0</span><br><span class="line">enabled&#x3D;1</span><br><span class="line">baseurl&#x3D;file:&#x2F;&#x2F;&#x2F;opt&#x2F;iaas&#x2F;iaas-repo</span><br><span class="line">[centos]</span><br><span class="line">name&#x3D;centos</span><br><span class="line">gpgcheck&#x3D;0</span><br><span class="line">enabled&#x3D;1</span><br><span class="line">baseurl&#x3D;file:&#x2F;&#x2F;&#x2F;opt&#x2F;centos</span><br><span class="line">[root@controller ~]# cat &#x2F;etc&#x2F;xiandian&#x2F;openrc.sh </span><br><span class="line">##--------------------system Config--------------------##</span><br><span class="line">##Controller Server Manager IP. example:x.x.x.x</span><br><span class="line">HOST_IP&#x3D;192.168.100.10</span><br><span class="line"></span><br><span class="line">##Controller Server hostname. example:controller</span><br><span class="line">HOST_NAME&#x3D;controller</span><br><span class="line"></span><br><span class="line">##Compute Node Manager IP. example:x.x.x.x</span><br><span class="line">HOST_IP_NODE&#x3D;192.168.100.20</span><br><span class="line"></span><br><span class="line">##Compute Node hostname. example:compute</span><br><span class="line">HOST_NAME_NODE&#x3D;compute</span><br><span class="line"></span><br><span class="line">##--------------------Rabbit Config ------------------##</span><br><span class="line">##user for rabbit. example:openstack</span><br><span class="line">RABBIT_USER&#x3D;openstack</span><br><span class="line"></span><br><span class="line">##Password for rabbit user .example:000000</span><br><span class="line">RABBIT_PASS&#x3D;000000</span><br><span class="line"></span><br><span class="line">##--------------------MySQL Config---------------------##</span><br><span class="line">##Password for MySQL root user . exmaple:000000</span><br><span class="line">DB_PASS&#x3D;000000</span><br><span class="line"></span><br><span class="line">##--------------------Keystone Config------------------##</span><br><span class="line">##Password for Keystore admin user. exmaple:000000</span><br><span class="line">DOMAIN_NAME&#x3D;demo</span><br><span class="line">ADMIN_PASS&#x3D;000000</span><br><span class="line">DEMO_PASS&#x3D;000000</span><br><span class="line"></span><br><span class="line">##Password for Mysql keystore user. exmaple:000000</span><br><span class="line">KEYSTONE_DBPASS&#x3D;000000</span><br><span class="line"></span><br><span class="line">##--------------------Glance Config--------------------##</span><br><span class="line">##Password for Mysql glance user. exmaple:000000</span><br><span class="line">GLANCE_DBPASS&#x3D;000000</span><br><span class="line"></span><br><span class="line">##Password for Keystore glance user. exmaple:000000</span><br><span class="line">GLANCE_PASS&#x3D;000000</span><br><span class="line"></span><br><span class="line">##--------------------Nova Config----------------------##</span><br><span class="line">##Password for Mysql nova user. exmaple:000000</span><br><span class="line">NOVA_DBPASS&#x3D;000000</span><br><span class="line"></span><br><span class="line">##Password for Keystore nova user. exmaple:000000</span><br><span class="line">NOVA_PASS&#x3D;000000</span><br><span class="line"></span><br><span class="line">##--------------------Neturon Config-------------------##</span><br><span class="line">##Password for Mysql neutron user. exmaple:000000</span><br><span class="line">NEUTRON_DBPASS&#x3D;000000</span><br><span class="line"></span><br><span class="line">##Password for Keystore neutron user. exmaple:000000</span><br><span class="line">NEUTRON_PASS&#x3D;000000</span><br><span class="line"></span><br><span class="line">##metadata secret for neutron. exmaple:000000</span><br><span class="line">METADATA_SECRET&#x3D;000000</span><br><span class="line"></span><br><span class="line">##External Network Interface. example:eth1</span><br><span class="line">INTERFACE_NAME&#x3D;enp9s0</span><br><span class="line"></span><br><span class="line">##First Vlan ID in VLAN RANGE for VLAN Network. exmaple:101</span><br><span class="line">#minvlan&#x3D;</span><br><span class="line"></span><br><span class="line">##Last Vlan ID in VLAN RANGE for VLAN Network. example:200</span><br><span class="line">#maxvlan&#x3D;</span><br><span class="line"></span><br><span class="line">##--------------------Cinder Config--------------------##</span><br><span class="line">##Password for Mysql cinder user. exmaple:000000</span><br><span class="line">CINDER_DBPASS&#x3D;000000</span><br><span class="line"></span><br><span class="line">##Password for Keystore cinder user. exmaple:000000</span><br><span class="line">CINDER_PASS&#x3D;000000</span><br><span class="line"></span><br><span class="line">##Cinder Block Disk. example:md126p3</span><br><span class="line">BLOCK_DISK&#x3D;sda1</span><br><span class="line"></span><br><span class="line">##--------------------Trove Config--------------------##</span><br><span class="line">##Password for Mysql Trove User. exmaple:000000</span><br><span class="line">TROVE_DBPASS&#x3D;000000</span><br><span class="line"></span><br><span class="line">##Password for Keystore Trove User. exmaple:000000</span><br><span class="line">TROVE_PASS&#x3D;000000</span><br><span class="line"></span><br><span class="line">##--------------------Swift Config---------------------##</span><br><span class="line">##Password for Keystore swift user. exmaple:000000</span><br><span class="line">SWIFT_PASS&#x3D;000000</span><br><span class="line"></span><br><span class="line">##The NODE Object Disk for Swift. example:md126p4.</span><br><span class="line">OBJECT_DISK&#x3D;sda2</span><br><span class="line"></span><br><span class="line">##The NODE IP for Swift Storage Network. example:x.x.x.x.</span><br><span class="line">STORAGE_LOCAL_NET_IP&#x3D;192.168.100.20</span><br><span class="line"></span><br><span class="line">##--------------------Heat Config----------------------##</span><br><span class="line">##Password for Mysql heat user. exmaple:000000</span><br><span class="line">HEAT_DBPASS&#x3D;000000</span><br><span class="line"></span><br><span class="line">##Password for Keystore heat user. exmaple:000000</span><br><span class="line">HEAT_PASS&#x3D;000000</span><br><span class="line"></span><br><span class="line">##--------------------Ceilometer Config----------------##</span><br><span class="line">##Password for Mysql ceilometer user. exmaple:000000</span><br><span class="line">CEILOMETER_DBPASS&#x3D;000000</span><br><span class="line"></span><br><span class="line">##Password for Keystore ceilometer user. exmaple:000000</span><br><span class="line">CEILOMETER_PASS&#x3D;000000</span><br><span class="line"></span><br><span class="line">##--------------------AODH Config----------------##</span><br><span class="line">##Password for Mysql AODH user. exmaple:000000</span><br><span class="line">AODH_DBPASS&#x3D;000000</span><br><span class="line"></span><br><span class="line">##Password for Keystore AODH user. exmaple:000000</span><br><span class="line">AODH_PASS&#x3D;000000</span><br></pre></td></tr></table></figure>
+
+<h3 id="5-数据库安装（4分）"><a href="#5-数据库安装（4分）" class="headerlink" title="5. 数据库安装（4分）"></a>5. 数据库安装（4分）</h3><p>根据平台安装步骤安装至数据库服务，使用提供的脚本iaas-install-mysql.sh安装mysql数据库服务。使用root用户登录数据库，使用命令查看mysql数据库中user表的host，user，password信息。将命令及反馈信息以文本形式提交到答题框。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[root@controller ~]# iaas-install-mysql.sh</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[root@controller ~]# mysql -uroot -p000000</span><br><span class="line">MariaDB [(none)]&gt; show databases;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="6-keystone安装（4分）"><a href="#6-keystone安装（4分）" class="headerlink" title="6.keystone安装（4分）"></a>6.keystone安装（4分）</h3><p>根据平台安装步骤安装至keystone认证服务，在控制节点使用提供的脚本iaas-install-keystone.sh安装keystone组件，admin-openrc.sh 文件在/etc/keystone/下。使用openstack 相关命令，查询admin用户信息，将操作命令和输出结果以文本形式提交到答题框。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[root@controller ~]# iaas-install-keystone.sh</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[root@controller ~]# mysql -uroot -p000000</span><br><span class="line">MariaDB [(none)]&gt; show grants for keystone;</span><br><span class="line">[root@controller ~]# openstack project show admin</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="7-glance安装（4分）"><a href="#7-glance安装（4分）" class="headerlink" title="7.glance安装（4分）"></a>7.glance安装（4分）</h3><p>根据平台安装步骤安装至镜像服务，在控制节点使用提供的脚本iaas-install-glance.sh安装glance组件。使用镜像文件CentOS_7.2_x86_64_XD.qcow2创建glance镜像CentOS7.2，格式为qcow2。使用Glance相关命令查询镜像详细信息，以文本形式提交命令和结果到答题框。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[root@controller ~]# glance image-create --name &quot;centos_7-x86_64&quot; --disk-format qcow2 --container-format bare --progress &lt; &#x2F;opt&#x2F;iaas&#x2F;images&#x2F;CentOS_7.2_x86_64_XD.qcow2</span><br><span class="line">[root@controller ~]# systemctl status openstack-glance-api.service openstack-glance-registry.service</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="8-nova安装（4分）"><a href="#8-nova安装（4分）" class="headerlink" title="8.nova安装（4分）"></a>8.nova安装（4分）</h3><p>根据平台安装步骤安装至nova计算服务，在控制节点使用提供的脚本iaas-install-nova-controller.sh、在计算节点使用提供的脚本iaas-install-nova-compute.sh，安装nova组件。使用nova相关命令查询计算节点虚拟机监控器的状态，将命令和结果以文本形式提交到答题框。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[root@controller ~]# iaas-install-nova-controller.sh</span><br><span class="line">[root@compute ~]# iaas-install-nova-compute.sh</span><br><span class="line">[root@controller ~]# openstack  hypervisor show compute</span><br><span class="line">[root@controller ~]# nova  hypervisor-stats</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[root@controller ~]#nova hypervisor-list</span><br><span class="line">+----+---------------------+-------+---------+</span><br><span class="line">| ID | Hypervisor hostname | State | Status  |</span><br><span class="line">+----+---------------------+-------+---------+</span><br><span class="line">| 1  | compute             | up    | enabled |</span><br><span class="line">| 2  | controller          | up    | enabled |</span><br><span class="line">+----+---------------------+-------+---------+</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="9-网络创建（4分）"><a href="#9-网络创建（4分）" class="headerlink" title="9.网络创建（4分）"></a>9.网络创建（4分）</h3><p>创建云主机外部网络ext-net，子网为ext-subnet，虚拟机浮动IP可用网段为192.168.200.100<del>192.168.200.200，网关为192.168.200.1。创建云主机隧道网络int-net1，子网为int-subnet1，虚拟机子网IP可用网段为10.0.0.100</del>10.0.0.200，网关为10.0.0.1；创建云主机隧道网络int-net2，子网为int-subnet2，虚拟机子网IP可用网段为10.0.1.100~10.0.1.200，网关为10.0.1.1。添加名为ext-router的路由器，添加网关在ext-net网络，添加内部端口到int-net1网络，完成隧道网络和外部网络的连通。</p>
+<p>使用neutron相关命令查询所创建路由的详细信息，将查询命令和结果以文本形式提交到答题框。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[root@controller ~]# neutron router-list</span><br><span class="line">[root@controller ~]# neutron router-show ext-router</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="10-dashboard配置（4分）"><a href="#10-dashboard配置（4分）" class="headerlink" title="10.dashboard配置（4分）"></a>10.dashboard配置（4分）</h3><p>通过脚本iaas-install-dashboard.sh安装dashboard，</p>
+<p>使用curl命令查询网址<a href="http://192.168.100.10/dashboard并将查询结果以文本形式提交到答题框。" target="_blank" rel="noopener">http://192.168.100.10/dashboard并将查询结果以文本形式提交到答题框。</a></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[root@controller ~]# curl -L http:&#x2F;&#x2F;192.168.100.10&#x2F;dashboard</span><br></pre></td></tr></table></figure>
+
+<h2 id="任务二、云平台运维（60分）"><a href="#任务二、云平台运维（60分）" class="headerlink" title="任务二、云平台运维（60分）"></a>任务二、云平台运维（60分）</h2><p>按以下配置在云平台中创建云主机，完成本任务下的相关试题后关闭云主机。</p>
+<p>云主机1： </p>
+<p>（1）名称：IaaS</p>
+<p>（2）镜像文件：Xiandian-IaaS-All.qcow2</p>
+<p>（3）云主机类型：4cpu、8G内存、100G硬盘</p>
+<p>（4）网络：网络1：int-net1，绑定浮动IP</p>
+<p>​      网络2：int-net2</p>
+<h3 id="1-rabbitmq管理（10分）"><a href="#1-rabbitmq管理（10分）" class="headerlink" title="1.rabbitmq管理（10分）"></a>1.rabbitmq管理（10分）</h3><p>登录IaaS云主机，使用rabbitmqctl创建用户xiandian-admin，密码为admin。然后查询所有用户列表，将以上所有操作命令及对应的反馈结果以文本形式提交到答题框中。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[root@xiandian ~]# rabbitmqctl add_user xiandianuser admin</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="2-数据库管理（10分）"><a href="#2-数据库管理（10分）" class="headerlink" title="2.数据库管理（10分）"></a>2.数据库管理（10分）</h3><p>登录IaaS云主机，通过mysql相关命令，查看当前是什么用户，以文本信息提交操作命令和查询结果到答题框。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[root@xiandian ~]# mysql -uroot -p000000</span><br><span class="line">select user();</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="3-nova管理（10分）"><a href="#3-nova管理（10分）" class="headerlink" title="3.nova管理（10分）"></a>3.nova管理（10分）</h3><p>登录IaaS云主机，修改云平台中默认每个tenant的实例注入文件大小配额为20480个，在答题框填入该命令，查询修改后的默认配额信息并以文本形式提交到答题框。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[root@xiandian ~]# nova quota-class-update  --injected-files 20480 default</span><br><span class="line">[root@xiandian ~]# nova quota-class-show default</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="4-块存储服务管理（10分）"><a href="#4-块存储服务管理（10分）" class="headerlink" title="4.块存储服务管理（10分）"></a>4.块存储服务管理（10分）</h3><p>登录IaaS云主机，创建名为“ lvm”的卷类型,然后创建一块带“lvm” 标识的云硬盘，名称为 BlockVloume，大小为 2G，查询该云硬盘详细信息，以文本形式在答题框按顺序输入操作命令及查询结果。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[root@xiandian ~]# cinder  type-create lvm --is-public true</span><br><span class="line">[root@xiandian ~]# cinder  create --display-name BlockVloume  --volume-type lvm 2</span><br><span class="line">[root@xiandian ~]# cinder show 6b232c83-ea04-4e8d-9d42-ed79f57d0a4d</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="5-glance镜像创建（10分）"><a href="#5-glance镜像创建（10分）" class="headerlink" title="5.glance镜像创建（10分）"></a>5.glance镜像创建（10分）</h3><p>登录IaaS云主机，使用glance相关命令上传CentOS_6.5_x86_64_XD.qcow2镜像到云主机中，镜像名为testone，然后使用openstack相关命令，并查看镜像的详细信息，将命令与返回结果提交到答题框。</p>
+<h3 id="6-Neutron管理（10分）"><a href="#6-Neutron管理（10分）" class="headerlink" title="6.Neutron管理（10分）"></a>6.Neutron管理（10分）</h3><p>登录“controller”节点；通过命令使用 centos7 镜像创建一台名为 iaas-2 的虚 拟机并指定虚拟机内网地址为 10.0.0.120。依次将各操作命令与返回结果以文本</p>
+<p>形式提交到答题框。</p>
+]]></content>
+      <categories>
+        <category>运维相关</category>
+      </categories>
+      <tags>
+        <tag>openstack</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>通过 admin 后台管理 hexo 博客</title>
+    <url>/2020/05/29/%E9%80%9A%E8%BF%87-admin-%E5%90%8E%E5%8F%B0%E7%AE%A1%E7%90%86-hexo-%E5%8D%9A%E5%AE%A2/</url>
+    <content><![CDATA[<h1 id="通过-admin-后台管理-hexo-博客"><a href="#通过-admin-后台管理-hexo-博客" class="headerlink" title="通过 admin 后台管理 hexo 博客"></a>通过 admin 后台管理 hexo 博客</h1><p>用了两年的 hexo 写博客，但随着博客数量的增加，构建变得原来越耗时，写博客也是强依赖于文本编辑器，无法通过 web 实时修改，更加没办法通过手机端去修改博客的内容，这让我挺苦恼。</p>
+<p>在纠结要不要更换成 WP/Ghost 良久之后，我决定，还是先把 Hexo 整个体验优化一下，等以后有大把空闲时间了，再折腾迁移的事情。</p>
+<h3 id="博客后台管理"><a href="#博客后台管理" class="headerlink" title="博客后台管理"></a>博客后台管理</h3><p>为了能够方便管理博客，我自己写过一个简单的 Blog Writer，然后配合 MakeFile 来简化流程，事实上，还是太麻烦了。在网上搜罗了一番，找到了两个博客管理后台，一个叫做 <code>hexo-hey</code>，界面还是做的挺不错的，但是呢，功能比较简单，或者说过于简单；还有一个就是我当前使用的 <code>hexo-admin</code>，其实也没多多少功能，只不过在细节上的处理稍微完善一些，而且项目活跃度也高一点，但仍然不能满足我的需求——它不支持移动端。</p>
+<p>所以我 fork 了这个项目，对它做了一些修改，目前是可以通过移动端编辑的。</p>
+<p>Fork 过来后，给官方提过一个 PR，貌似还没有合并，合并的那些代码主要是兼容了移动端，但是后来我又发现了它的各种 bug 和性能问题，修复后，并没有提 PR，最新的代码在这里：<a href="https://github.com/barretlee/hexo-admin" target="_blank" rel="noopener">hexo-admin</a>。</p>
+<h3 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h3><p>如果你要使用我修改的代码可以这么做：</p>
+<ol>
+<li>按照官方的方式安装 <code>hexo-admin</code></li>
+<li>下载我修改的代码到一个文件夹，执行 <code>npm link</code>;</li>
+<li>在 hexo 根目录下执行 <code>npm link hexo-admin</code>;</li>
+</ol>
+<p>把代码链接过去，我懒得给官方提 PR 了，这玩意儿我做了一些私人定制，不适合继续提 PR 了，比如 Pages 我只允许展示 <code>/pages</code> 目录下的资源。</p>
+<p>整个后台使用 react 构建的，代码逻辑还比较清晰，喜欢折腾的同学可以在原来的代码基础上继续修改。</p>
+<p><em>P.S. 当前这篇文章就是通过 Web 编辑的，我的 hexo 博客已经部署到阿里云了。</em></p>
+<p>转载：<a href="https://www.dazhuanlan.com/2019/12/11/5df0a05478abf/" target="_blank" rel="noopener">大专栏</a></p>
+]]></content>
+      <categories>
+        <category>折腾博客这些事</category>
+      </categories>
+      <tags>
+        <tag>blog 优化</tag>
+      </tags>
   </entry>
   <entry>
     <title>Hello World</title>
